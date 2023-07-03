@@ -1,0 +1,11 @@
+{
+  "output": "move_data_test.txt",
+  "generation": 1,
+  "start": 1,
+  "end": 9,
+  "forms": {
+    "forms": false,
+    "gender-based": false,
+    "regional variant": false
+  }
+}
