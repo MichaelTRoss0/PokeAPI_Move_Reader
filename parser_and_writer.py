@@ -19,8 +19,8 @@ def parse_and_write_info(filename, gen, forms, dex):
         }
         parsed_dex.append(data)
 
-        print("Parsed data for " + name)
-    print("Parsing data complete!\n")
+        print("Parsed moves for " + name)
+    print("Parsing moves complete!\n")
 
     file = open(filename, 'w', encoding="utf-8")
     print("Writing data to file...")
@@ -343,12 +343,159 @@ def parse_name(raw_name, forms):
     return name
 
 
-def parse_moves(moves):  # TODO Write this function
-    pass
+def parse_moves(move_dict, gen):
+    move_list = []
+    for entry in move_dict:
+        move = entry["move"]["name"]
+        version_group_details = entry["version_group_details"]
+        for group in version_group_details:
+            version_group = group["version_group"]["name"]
+            if is_in_gen(gen, version_group):
+                name = parse_move_name(move)
+                move_list.append(name)
+                break
+
+    return move_list
+
+
+def is_in_gen(gen, version_group):
+    match gen:
+        case 1:
+            match version_group:
+                case "red-blue":
+                    return True
+                case "yellow":
+                    return True
+                case _:
+                    return False
+        case 2:
+            match version_group:
+                case "gold-silver":
+                    return True
+                case "crystal":
+                    return True
+                case _:
+                    return False
+        case 3:
+            match version_group:
+                case "ruby-sapphire":
+                    return True
+                case "emerald":
+                    return True
+                case "firered-leafgreen":
+                    return True
+                case "colosseum":
+                    return True
+                case "xd":
+                    return True
+                case _:
+                    return False
+        case 4:
+            match version_group:
+                case "diamond-pearl":
+                    return True
+                case "platinum":
+                    return True
+                case "heartgold-soulsilver":
+                    return True
+                case _:
+                    return False
+        case 5:
+            match version_group:
+                case "black-white":
+                    return True
+                case "black-2-white-2":
+                    return True
+                case "firered-leafgreen":
+                    return True
+                case _:
+                    return False
+        case 6:
+            match version_group:
+                case "x-y":
+                    return True
+                case "omega-ruby-alpha-sapphire":
+                    return True
+                case _:
+                    return False
+        case 7:
+            match version_group:
+                case "sun-moon":
+                    return True
+                case "ultra-sun-ultra-moon":
+                    return True
+                case _:
+                    return False
+        case 8:
+            match version_group:
+                case "sword-shield":
+                    return True
+                case "the-isle-of-armor":
+                    return True
+                case "the-crown-tundra":
+                    return True
+                case "lets-go-pikachu-lets-go-eevee":
+                    return True
+                case "brilliant-diamond-and-shining-pearl":
+                    return True
+                case "legends-arceus":
+                    return True
+                case _:
+                    return False
+        case 9:
+            match version_group:
+                case "scarlet-violet":
+                    return True
+                case "the-teal-mask":
+                    return True
+                case "the-indigo-disk":
+                    return True
+                case _:
+                    return False
+
+
+def parse_move_name(move):
+    name = move.replace("-", " ")
+    name = name.title()
+    match name:
+        case "Baby Doll Eyes":
+            name = "Baby-Doll Eyes"
+        case "Double Edge":
+            name = "Double-Edge"
+        case "Freeze Dry":
+            name = "Freeze-Dry"
+        case "Lock On":
+            name = "Lock-On"
+        case "Mud Slap":
+            name = "Mud-Slap"
+        case "Multi Attack":
+            name = "Multi-Attack"
+        case "Power Up Punch":
+            name = "Power-Up Punch"
+        case "Self Destruct":
+            name = "Self-Destruct"
+        case "Soft Boiled":
+            name = "Soft-Boiled"
+        case "Topsy Turvy":
+            name = "Topsy-Turvy"
+        case "Trick Or Treat":
+            name = "Trick-or-Trear"
+        case "U Turn":
+            name = "U-turn"
+        case "V Create":
+            name = "V-create"
+        case "Wake Up Slap":
+            name = "Wake-Up Slap"
+        case "Will O Wisp":
+            name = "Will-O-Wisp"
+        case "X Scissor":
+            name = "X-Scissor"
+
+    return name
 
 
 def write_header(file, size):
-    header = "{:>4} || {:>{size}} ||".format("ID#", "Name", size=size)
+    header = "{:>4} || {:>{size}} || Moves\n".format("ID#", "Name", size=size)
 
     length = len(header)
     separator = ""
@@ -362,8 +509,8 @@ def write_header(file, size):
 
 
 def write_info(name, id_number, moves, file, size):
-    info1 = "{:>4} || {:>{size}} ||".format(id_number, name, size=size)
-    info2 = list_moves(moves)
+    info1 = "{:>4} || {:>{size}} || ".format(id_number, name, size=size)
+    info2 = list_moves(moves) + "\n"
 
     info_line = info1 + info2
 
@@ -372,6 +519,10 @@ def write_info(name, id_number, moves, file, size):
 
 def list_moves(move_list):
     length = len(move_list)
+
+    if length == 0:
+        return ""
+
     line = move_list[0]
     for i in range(1, length):
         line += ", "

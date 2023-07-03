@@ -4,7 +4,7 @@ limit = 1010
 
 
 def verify(params):
-    li = ["output", "generations", "start", "end", "forms"]
+    li = ["output", "generation", "start", "end", "forms"]
     for s in li:
         if s not in params:
             msg = "Variable {} is missing or misnamed in parameters.".format(s)
@@ -17,7 +17,7 @@ def validate(output_file, gen, start, end, forms):
                             "It must end in '.txt'."
         sys.exit(msg)
 
-    check_gen(start, end, gen)
+    check_gen(gen, start, end)
 
     if start < 1 or start >= limit:
         msg = "{} is not a valid value for 'start'. " \
@@ -133,13 +133,13 @@ def check_gen(gen, start, end):
             elif start < 810:
                 msg = "Not all Pokémon from previous Generations are available in Generation 8. " \
                       "If no Generation 8 data exists for a Pokémon, " \
-                      "then it will not contribute to any written data.\n"
+                      "then the list of moves will be blank.\n"
                 print(msg)
         case 9:
             if start < 810:
                 msg = "Not all Pokémon from previous Generations are available in Generation 9. " \
                       "If no Generation 9 data exists for a Pokémon, " \
-                      "then it will not contribute to any written data.\n"
+                      "then the list of moves will be blank.\n"
                 print(msg)
 
 
